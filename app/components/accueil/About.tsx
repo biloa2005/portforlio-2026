@@ -5,11 +5,8 @@ import Image from "next/image";
 import { Terminal, Sparkles, Layers, Cpu } from "lucide-react";
 
 export default function About() {
-  // Gestion de la position du curseur/doigt pour l'effet de couleur sur l'image
   const [maskPosition, setMaskPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
-  
-  // Typage explicite de la référence pour éviter l'erreur sur getBoundingClientRect()
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -95,8 +92,6 @@ export default function About() {
                   className="object-cover"
                 />
               </div>
-
-             
             </div>
           </div>
 
@@ -112,7 +107,7 @@ export default function About() {
             </h3>
 
             <p className="text-zinc-400 text-base sm:text-lg leading-relaxed">
-              Passionné par l'ingénierie logicielle et <strong className="text-zinc-200">l'architecture w</strong>, je conçois des applications performantes, scalables et dotées d'interfaces fluides. Spécialisé dans les technologies modernes du web, j'aime transformer des idées complexes en solutions logicielles élégantes et robustes.
+              Passionné par l'ingénierie logicielle et <strong className="text-zinc-200">l'architecture web</strong>, je conçois des applications performantes, scalables et dotées d'interfaces fluides. Spécialisé dans les technologies modernes du web, j'aime transformer des idées complexes en solutions logicielles élégantes et robustes.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
@@ -142,14 +137,14 @@ export default function About() {
 
       </div>
 
-      {/* Bande Infini Inclinée Plein Écran */}
+      {/* Bande Infinie Inclinée Plein Écran (Corrigée sans bug de blocage tactile) */}
       <div className="relative w-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] my-12 rotate-[-2deg] bg-indigo-600 py-4 shadow-2xl overflow-hidden">
-        <div className="flex w-max animate-marquee gap-8 items-center">
-          {/* On répète la liste pour assurer la continuité de l'effet infini */}
-          {[...technologies, ...technologies, ...technologies].map((tech, index) => (
+        <div className="flex w-max animate-marquee gap-6 items-center">
+          {/* On duplique la liste 4 fois pour garantir une fluidité totale sur tous les écrans sans jamais voir de coupure vide */}
+          {[...technologies, ...technologies, ...technologies, ...technologies].map((tech, index) => (
             <div
               key={index}
-              className="flex items-center gap-3 px-6 py-2 rounded-full bg-indigo-700/60 backdrop-blur-sm border border-indigo-400/30 text-white font-mono text-sm font-bold tracking-wide shadow-sm"
+              className="flex shrink-0 items-center gap-3 px-6 py-2.5 rounded-full bg-indigo-700/80 backdrop-blur-md border border-indigo-400/30 text-white font-mono text-sm font-bold tracking-wide shadow-md whitespace-nowrap"
             >
               <span className="h-2 w-2 rounded-full bg-white animate-pulse"></span>
               {tech}

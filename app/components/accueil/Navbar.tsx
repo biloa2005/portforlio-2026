@@ -23,7 +23,7 @@ export default function Navbar() {
           className="flex items-center gap-2 group transition-opacity hover:opacity-80"
         >
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 shadow-sm transition-transform group-hover:scale-105">
-            <ShieldX className="h-5 w-5 text-indigo-400" />
+            <ShieldX className="h-5 w-5" />
           </div>
           <span className="font-bold tracking-tight text-zinc-900 dark:text-zinc-50 text-lg">
             Biloa<span className="text-indigo-600 dark:text-indigo-400">.</span>

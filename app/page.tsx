@@ -3,6 +3,7 @@ import Image from "next/image";
 import Navbar from "./components/accueil/Navbar";
 import About from "./components/accueil/About";
 import FeaturedProjects from "./components/accueil/FeaturedProjects";
+import Footer from "./components/accueil/Footer";
 
 export default function Home() {
  
@@ -11,6 +12,7 @@ export default function Home() {
  <Navbar/>
  <About/>
  <FeaturedProjects/>
+ <Footer/>
    </div>
   
   );

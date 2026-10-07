@@ -156,7 +156,7 @@ export default function FeaturedProjects() {
                   {/* Overlay indicatif au survol */}
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20 pointer-events-none">
                     <span className="px-3 py-1.5 rounded-xl bg-zinc-900/90 text-white text-xs font-medium border border-zinc-700 shadow-lg">
-                      🔍 Agrandir les images
+                       Agrandir les images
                     </span>
                   </div>
                 </div>

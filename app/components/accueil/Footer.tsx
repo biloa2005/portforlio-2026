@@ -43,7 +43,7 @@ export default function Footer() {
             {/* Réseaux sociaux */}
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://github.com"
+                href="https://github.com/biloa2005"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-indigo-500/50 transition-all shadow-sm"
@@ -52,7 +52,7 @@ export default function Footer() {
                 <FaGithub className="h-4 w-4" />
               </a>
               <a
-                href="https://linkedin.com"
+               href="https://linkedin.com/in/biloaphilemon"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-indigo-500/50 transition-all shadow-sm"

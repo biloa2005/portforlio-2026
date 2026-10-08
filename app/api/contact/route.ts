@@ -1,82 +1,47 @@
+import { NextResponse } from "next/server";
 import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-
-    const { name, email, subject, message } = body;
-
-    // Vérification des champs
-    if (!name || !email || !message) {
-      return Response.json(
-        {
-          success: false,
-          message: "Veuillez remplir tous les champs obligatoires.",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Envoi de l'email
-    const { data, error } = await resend.emails.send({
-      from: "Formulaire <onboarding@resend.dev>",
-      to: [process.env.CONTACT_EMAIL!],
-      replyTo: email,
-      subject: subject || `Message de ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif;">
-          <h2>Nouveau message depuis votre site</h2>
-
-          <p>
-            <strong>Nom :</strong> ${name}
-          </p>
-
-          <p>
-            <strong>Email :</strong> ${email}
-          </p>
-
-          <p>
-            <strong>Sujet :</strong> ${subject || "Aucun sujet"}
-          </p>
-
-          <hr />
-
-          <h3>Message :</h3>
-
-          <p style="white-space: pre-line;">
-            ${message}
-          </p>
-        </div>
-      `,
-    });
-
-    if (error) {
-      console.error(error);
-
-      return Response.json(
-        {
-          success: false,
-          message: "Erreur lors de l'envoi de l'email.",
-        },
+    // Vérification et initialisation de Resend à l'intérieur de la requête (évite le crash au build)
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { message: "La clé API Resend n'est pas configurée sur le serveur." },
         { status: 500 }
       );
     }
 
-    return Response.json({
-      success: true,
-      message: "Votre message a été envoyé avec succès.",
-      data,
-    });
-  } catch (error) {
-    console.error(error);
+    const resend = new Resend(apiKey);
 
-    return Response.json(
-      {
-        success: false,
-        message: "Une erreur est survenue.",
-      },
+    const body = await request.json();
+    const { name, email, subject, message } = body;
+
+    // Validation basique
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { message: "Veuillez remplir tous les champs obligatoires." },
+        { status: 400 }
+      );
+    }
+
+    // Envoi de l'e-mail via Resend
+    const data = await resend.emails.send({
+      from: "Portfolio Contact <onboarding@resend.dev>", // Ou ton domaine vérifié sur Resend
+      to: ["biloaphilemon@gmail.com"],
+      subject: subject || `Nouveau message de ${name} depuis le portfolio`,
+      replyTo: email,
+      text: `Nom: ${name}\nEmail: ${email}\nSujet: ${subject || "Aucun"}\n\nMessage:\n${message}`,
+    });
+
+    return NextResponse.json(
+      { message: "Message envoyé avec succès !", data },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Erreur lors de l'envoi de l'e-mail:", error);
+    return NextResponse.json(
+      { message: "Une erreur est survenue lors de l'envoi du message." },
       { status: 500 }
     );
   }

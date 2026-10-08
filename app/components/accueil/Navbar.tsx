@@ -10,7 +10,9 @@ export default function Navbar() {
   const navLinks = [
     { name: "Accueil", href: "/" },
     { name: "Projets", href: "#projets" },
+    { name: "Stack-Technique", href: "stack_technique" },
     { name: "Contact", href: "contact" },
+   
   ];
 
   return (

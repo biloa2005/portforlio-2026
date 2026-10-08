@@ -60,15 +60,7 @@ export default function Footer() {
               >
                 <FaLinkedin className="h-4 w-4" />
               </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-indigo-500/50 transition-all shadow-sm"
-                aria-label="Twitter"
-              >
-                <FaTwitter className="h-4 w-4" />
-              </a>
+             
             </div>
           </div>
 
@@ -124,7 +116,7 @@ export default function Footer() {
         {/* Bas du footer : Copyright + Bouton Retour en haut */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
           <p className="flex items-center gap-1">
-            © {currentYear} Biloa Philemon Armand. Fait avec <Heart className="h-3 w-3 text-red-500 fill-red-500" /> & Next.js.
+            © {currentYear} Biloa Philemon Armand. Fait avec <Heart className="h-3 w-3 text-red-500 fill-red-500" /> 
           </p>
 
           <button

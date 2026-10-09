@@ -1,6 +1,7 @@
 "use client";
 
 import { Sparkles, Megaphone } from "lucide-react";
+import { FaJava } from "react-icons/fa";
 import { 
   SiDocker, 
   SiMysql, 
@@ -11,7 +12,9 @@ import {
   SiExpress, 
   SiGit, 
   SiPython,
-  SiTypescript
+  SiTypescript,
+  SiOpenjdk,
+  SiNodedotjs
 } from "react-icons/si";
 
 export default function TechStack() {
@@ -27,8 +30,8 @@ export default function TechStack() {
     {
       name: "Node.js",
       category: "Runtime Backend",
-      icon: SiExpress, // Utilisé pour l'écosystème Node/Express
-      color: "text-zinc-300 group-hover:text-white",
+      icon: SiNodedotjs, // Utilisé pour l'écosystème Node/Express
+      color: "text-green-500 group-hover:text-green-500",
       borderHover: "hover:border-zinc-400/50",
       bgHover: "hover:bg-zinc-200/5",
     },
@@ -109,6 +112,14 @@ export default function TechStack() {
       category: "Stratégie & Croissance",
       icon: Megaphone,
       color: "text-indigo-400 group-hover:text-indigo-500",
+      borderHover: "hover:border-indigo-500/50",
+      bgHover: "hover:bg-indigo-500/5",
+    },
+     {
+      name: "Java",
+      category: "application offline & API",
+      icon: FaJava,
+      color: "text-white group-hover:text-indigo-500",
       borderHover: "hover:border-indigo-500/50",
       bgHover: "hover:bg-indigo-500/5",
     },

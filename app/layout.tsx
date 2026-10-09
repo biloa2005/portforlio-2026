@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import WhatsAppButton from "./components/whatsapp";
@@ -19,7 +19,9 @@ export const metadata: Metadata = {
   title: "portfolio biloa",
   description: "portfolio du developpeur biloa philemon armand developpeur fullstack nodejs",
 };
-
+export const viewport: Viewport = {
+  themeColor: "indigo-400",
+};
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html

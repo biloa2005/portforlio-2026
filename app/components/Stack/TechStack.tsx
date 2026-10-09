@@ -14,7 +14,8 @@ import {
   SiPython,
   SiTypescript,
   SiOpenjdk,
-  SiNodedotjs
+  SiNodedotjs,
+  SiTailwindcss
 } from "react-icons/si";
 
 export default function TechStack() {
@@ -112,6 +113,14 @@ export default function TechStack() {
       category: "Frontend",
       icon: FaHtml5,
       color: "text-blue-500 group-hover:text-red-500",
+      borderHover: "hover:border-indigo-500/50",
+      bgHover: "hover:bg-indigo-500/5",
+    },
+     {
+      name: "Tailwind CSS",
+      category: "Frontend",
+      icon: SiTailwindcss,
+      color: "text-blue-500 group-hover:text-white-500",
       borderHover: "hover:border-indigo-500/50",
       bgHover: "hover:bg-indigo-500/5",
     },

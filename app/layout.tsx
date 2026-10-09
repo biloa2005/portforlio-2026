@@ -17,10 +17,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "portfolio biloa",
-  description: "portfolio du developpeur biloa philemon armand developpeur fullstack nodejs",
+  description: "portfolio du developpeur biloa philemon developpeur fullstack nodejs",
 };
 export const viewport: Viewport = {
-  themeColor: "#818cf8",
+  themeColor: "#0c0c0c",
 };
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

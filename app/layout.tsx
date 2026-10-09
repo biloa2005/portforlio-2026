@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   description: "portfolio du developpeur biloa philemon armand developpeur fullstack nodejs",
 };
 export const viewport: Viewport = {
-  themeColor: "indigo-400",
+  themeColor: "#818cf8",
 };
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkles, Megaphone } from "lucide-react";
-import { FaJava } from "react-icons/fa";
+import { FaHtml5, FaJava } from "react-icons/fa";
 import { 
   SiDocker, 
   SiMysql, 
@@ -106,6 +106,14 @@ export default function TechStack() {
       color: "text-orange-500 group-hover:text-orange-600",
       borderHover: "hover:border-orange-500/50",
       bgHover: "hover:bg-orange-500/5",
+    },
+      {
+      name: "HTML/CSS",
+      category: "Frontend",
+      icon: FaHtml5,
+      color: "text-blue-500 group-hover:text-red-500",
+      borderHover: "hover:border-indigo-500/50",
+      bgHover: "hover:bg-indigo-500/5",
     },
     {
       name: "Marketing Digital",

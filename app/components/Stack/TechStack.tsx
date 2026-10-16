@@ -1,6 +1,7 @@
 "use client";
 
 import { Sparkles, Megaphone } from "lucide-react";
+import { motion } from "framer-motion";
 import { FaHtml5, FaJava } from "react-icons/fa";
 import { 
   SiDocker, 
@@ -13,7 +14,6 @@ import {
   SiGit, 
   SiPython,
   SiTypescript,
-  SiOpenjdk,
   SiNodedotjs,
   SiTailwindcss
 } from "react-icons/si";
@@ -31,7 +31,7 @@ export default function TechStack() {
     {
       name: "Node.js",
       category: "Runtime Backend",
-      icon: SiNodedotjs, // Utilisé pour l'écosystème Node/Express
+      icon: SiNodedotjs,
       color: "text-green-500 group-hover:text-green-500",
       borderHover: "hover:border-zinc-400/50",
       bgHover: "hover:bg-zinc-200/5",
@@ -108,7 +108,7 @@ export default function TechStack() {
       borderHover: "hover:border-orange-500/50",
       bgHover: "hover:bg-orange-500/5",
     },
-      {
+    {
       name: "HTML/CSS",
       category: "Frontend",
       icon: FaHtml5,
@@ -116,11 +116,11 @@ export default function TechStack() {
       borderHover: "hover:border-indigo-500/50",
       bgHover: "hover:bg-indigo-500/5",
     },
-     {
+    {
       name: "Tailwind CSS",
       category: "Frontend",
       icon: SiTailwindcss,
-      color: "text-blue-500 group-hover:text-white-500",
+      color: "text-blue-500 group-hover:text-white",
       borderHover: "hover:border-indigo-500/50",
       bgHover: "hover:bg-indigo-500/5",
     },
@@ -132,7 +132,7 @@ export default function TechStack() {
       borderHover: "hover:border-indigo-500/50",
       bgHover: "hover:bg-indigo-500/5",
     },
-     {
+    {
       name: "Java",
       category: "application offline & API",
       icon: FaJava,
@@ -142,12 +142,35 @@ export default function TechStack() {
     },
   ];
 
+  // Animation de révélation des cartes : chaque carte se révèle quand elle entre
+  // dans l'écran (au scroll). Fonctionne aussi sur mobile (grille 1 colonne).
+  const cardVariants = {
+    hidden: { opacity: 0, y: 40, scale: 0.9, filter: "blur(6px)" },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1] as const,
+        delay: (i % 6) * 0.08, // léger décalage entre cartes d'une même ligne
+      },
+    }),
+  };
+
   return (
     <section id="stack" className="relative overflow-hidden bg-zinc-950 py-24 text-zinc-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* En-tête de section */}
-        <div className="mb-16 text-center">
+        <motion.div
+          className="mb-16 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold tracking-wider text-indigo-400 border border-zinc-800 uppercase">
             <Sparkles className="h-3.5 w-3.5" /> Compétences
           </div>
@@ -157,33 +180,45 @@ export default function TechStack() {
           <p className="mt-2 text-zinc-400 max-w-xl mx-auto text-sm sm:text-base">
             Les technologies, frameworks et outils que j'utilise au quotidien pour concevoir des applications web robustes et performantes.
           </p>
-        </div>
+        </motion.div>
 
         {/* Grille des technos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {technologies.map((tech, index) => {
             const IconComponent = tech.icon;
             return (
-              <div
-                key={index}
-                className={`group relative flex flex-col items-center justify-center p-6 bg-zinc-900/60 border border-zinc-800 ${tech.borderHover} ${tech.bgHover} transition-all duration-300 shadow-md hover:-translate-y-1`}
+              // Wrapper animé : il porte l'animation d'apparition (transform/opacity).
+              // La carte interne garde ses transitions CSS (hover) sans conflit.
+              <motion.div
+                key={tech.name}
+                custom={index}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                // amount faible + marge négative : se déclenche de façon fiable
+                // sur petit écran, et une seule fois (once)
+                viewport={{ once: true, amount: 0.2, margin: "0px 0px -40px 0px" }}
               >
-                {/* Icône de la techno */}
-                <div className={`text-3xl mb-3 transition-transform duration-300 group-hover:scale-110 ${tech.color}`}>
-                  <IconComponent />
+                <div
+                  className={`group relative flex h-full flex-col items-center justify-center p-6 bg-zinc-900/60 border border-zinc-800 ${tech.borderHover} ${tech.bgHover} transition-all duration-300 shadow-md hover:-translate-y-1`}
+                >
+                  {/* Icône de la techno */}
+                  <div className={`text-3xl mb-3 transition-transform duration-300 group-hover:scale-110 ${tech.color}`}>
+                    <IconComponent />
+                  </div>
+
+                  {/* Nom et Catégorie */}
+                  <h3 className="text-sm font-bold text-white tracking-wide text-center">
+                    {tech.name}
+                  </h3>
+                  <span className="mt-1 text-[10px] font-mono text-zinc-500 uppercase tracking-wider text-center">
+                    {tech.category}
+                  </span>
+
+                  {/* Petit accent lumineux discret dans le coin au survol */}
+                  <div className="absolute top-0 right-0 h-2 w-2 bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
-
-                {/* Nom et Catégorie */}
-                <h3 className="text-sm font-bold text-white tracking-wide text-center">
-                  {tech.name}
-                </h3>
-                <span className="mt-1 text-[10px] font-mono text-zinc-500 uppercase tracking-wider text-center">
-                  {tech.category}
-                </span>
-
-                {/* Petit accent lumineux discret dans le coin au survol */}
-                <div className="absolute top-0 right-0 h-2 w-2 bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

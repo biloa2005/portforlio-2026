@@ -2,7 +2,29 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { Terminal, Sparkles, Layers, Cpu } from "lucide-react";
+
+// Variantes d'animation : chaque élément se révèle quand il entre dans l'écran.
+// Seuls opacity / y / scale sont animés : fluide et visible sur mobile.
+const fadeUp = {
+  hidden: { opacity: 0, y: 40, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
+// Conteneur qui déclenche l'apparition en cascade de ses enfants
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15 } },
+};
+
+// amount faible + marge négative : se déclenche de façon fiable sur petit écran
+const viewport = { once: true, amount: 0.2, margin: "0px 0px -40px 0px" };
 
 export default function About() {
   const [maskPosition, setMaskPosition] = useState({ x: 0, y: 0 });
@@ -40,22 +62,34 @@ export default function About() {
   return (
     <section id="about" className="relative overflow-hidden bg-zinc-950 py-24 text-zinc-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
+
         {/* En-tête de section */}
-        <div className="mb-16 text-center">
+        <motion.div
+          className="mb-16 text-center"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+        >
           <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold tracking-wider text-indigo-400 border border-zinc-800 uppercase">
             <Sparkles className="h-3.5 w-3.5" /> À propos de moi
           </div>
           <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl text-white">
             Concepteur d'expériences web & backend
           </h2>
-        </div>
+        </motion.div>
 
         {/* Grille principale : Photo interactive + Texte */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-24">
-          
+
           {/* Colonne Photo avec effet Noir & Blanc -> Couleur au survol/toucher */}
-          <div className="lg:col-span-5 flex justify-center">
+          <motion.div
+            className="lg:col-span-5 flex justify-center"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+          >
             <div
               ref={imageContainerRef}
               onMouseMove={handleMouseMove}
@@ -93,25 +127,38 @@ export default function About() {
                 />
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Colonne Texte de présentation */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="flex items-center gap-3 text-indigo-400">
+          {/* Colonne Texte de présentation : les blocs apparaissent en cascade */}
+          <motion.div
+            className="lg:col-span-7 space-y-6"
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+          >
+            <motion.div variants={fadeUp} className="flex items-center gap-3 text-indigo-400">
               <Terminal className="h-6 w-6" />
               <span className="font-mono text-sm uppercase tracking-wider">Développeur Full-Stack Junior</span>
-            </div>
+            </motion.div>
 
-            <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            <motion.h3 variants={fadeUp} className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
               Salut, je suis <span className="text-indigo-400">Biloa Philemon</span>
-            </h3>
+            </motion.h3>
 
-            <p className="text-zinc-400 text-base sm:text-lg leading-relaxed">
+            <motion.p variants={fadeUp} className="text-zinc-400 text-base sm:text-lg leading-relaxed">
               Passionné par l'ingénierie logicielle et <strong className="text-zinc-200">l'architecture web</strong>, je conçois des applications performantes, scalables et dotées d'interfaces fluides. Spécialisé dans les technologies modernes du web, j'aime transformer des idées complexes en solutions logicielles élégantes et robustes.
-            </p>
+            </motion.p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-              <div className="flex items-start gap-3 p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800/80">
+            {/* Cartes : se révèlent l'une après l'autre */}
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4"
+              variants={stagger}
+            >
+              <motion.div
+                variants={fadeUp}
+                className="flex items-start gap-3 p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800/80"
+              >
                 <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
                   <Cpu className="h-5 w-5" />
                 </div>
@@ -119,9 +166,12 @@ export default function About() {
                   <h4 className="font-semibold text-white text-sm">Backend & API</h4>
                   <p className="text-xs text-zinc-400 mt-1">Conception d'architectures robustes, sécurisées et orientées données.</p>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="flex items-start gap-3 p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800/80">
+              <motion.div
+                variants={fadeUp}
+                className="flex items-start gap-3 p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800/80"
+              >
                 <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
                   <Layers className="h-5 w-5" />
                 </div>
@@ -129,9 +179,9 @@ export default function About() {
                   <h4 className="font-semibold text-white text-sm">Frontend & UI</h4>
                   <p className="text-xs text-zinc-400 mt-1">Intégration d'interfaces modernes, réactives et ergonomiques.</p>
                 </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
         </div>
 

@@ -52,7 +52,7 @@ export default function Footer() {
                 <FaGithub className="h-4 w-4" />
               </a>
               <a
-               href="https://linkedin.com/in/biloaphilemon"
+               href="https://www.linkedin.com/in/philemon-biloa-b39613336?utm_source=share_via&utm_content=profile&utm_medium=member_android"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-indigo-500/50 transition-all shadow-sm"

@@ -108,7 +108,7 @@ export default function ContactForm() {
 
           {/* LinkedIn */}
           <a
-            href="https://linkedin.com/in/biloaphilemon"
+            href="https://www.linkedin.com/in/philemon-biloa-b39613336?utm_source=share_via&utm_content=profile&utm_medium=member_android"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-4 bg-zinc-900/60 border border-zinc-800 hover:border-indigo-500/50 hover:bg-zinc-900 transition-all group shadow-md"

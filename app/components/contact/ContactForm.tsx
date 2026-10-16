@@ -118,7 +118,7 @@ export default function ContactForm() {
             </div>
             <div className="overflow-hidden">
               <p className="text-xs font-mono uppercase tracking-wider text-zinc-500">LinkedIn</p>
-              <p className="text-xs sm:text-sm font-medium text-zinc-200 truncate">biloaphilemon</p>
+              <p className="text-xs sm:text-sm font-medium text-zinc-200 truncate">philemonbiloa</p>
             </div>
           </a>
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Sparkles, ExternalLink, Layers, ShieldCheck, Calendar, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,9 +15,26 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 
+// Animation horizontale des cartes : chaque carte glisse depuis le côté
+// (alternance gauche / droite) et se révèle quand elle entre dans l'écran.
+// `custom` reçoit l'index de la carte.
+const cardVariants = {
+  hidden: (index: number) => ({
+    opacity: 0,
+    x: index % 2 === 0 ? -80 : 80, // pair : depuis la gauche, impair : depuis la droite
+    scale: 0.95,
+  }),
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
 export default function FeaturedProjects() {
   const [isMounted, setIsMounted] = useState(false);
-  
+
   // États pour gérer la modale de zoom des images
   const [modalOpen, setModalOpen] = useState(false);
   const [activeImages, setActiveImages] = useState<string[]>([]);
@@ -80,9 +98,15 @@ export default function FeaturedProjects() {
   return (
     <section id="projets" className="relative bg-zinc-950 py-24 text-zinc-100 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
-        {/* En-tête de section avec animation d'apparition */}
-        <div className="mb-16 text-center animate-in fade-in slide-in-from-bottom-6 duration-700">
+
+        {/* En-tête de section avec animation d'apparition au scroll */}
+        <motion.div
+          className="mb-16 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-semibold tracking-wider text-indigo-400 border border-zinc-800 uppercase shadow-inner">
             <Sparkles className="h-3.5 w-3.5" /> Mes Réalisations
           </div>
@@ -92,119 +116,131 @@ export default function FeaturedProjects() {
           <p className="mt-2 text-zinc-400 max-w-2xl mx-auto text-sm sm:text-base">
             Découvrez une sélection de mes projets récents alliant ingénierie backend rigoureuse et interfaces frontend soignées.
           </p>
-        </div>
+        </motion.div>
 
         {/* Grille des projets */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => {
             const IconComponent = project.icon;
             return (
-              <div
+              // Wrapper animé : porte l'animation horizontale (transform/opacity).
+              // La carte interne garde ses effets de survol CSS sans conflit.
+              <motion.div
                 key={index}
-                className="group relative flex flex-col rounded-3xl bg-zinc-900/60 border border-zinc-800 overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/10 animate-in fade-in slide-in-from-bottom-8 duration-700"
-                style={{ animationDelay: `${index * 150}ms` }}
+                custom={index}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                // amount faible : les cartes sont hautes, ça se déclenche
+                // de façon fiable sur téléphone. once : ne rejoue pas.
+                viewport={{ once: true, amount: 0.15 }}
+                className="h-full"
               >
-                {/* Conteneur Image avec Swiper cliquable pour ouvrir la modale */}
-                <div 
-                  className="relative h-56 w-full overflow-hidden bg-zinc-950 cursor-pointer"
-                  onClick={() => openImageModal(project.images, project.title)}
-                  title="Cliquez pour agrandir les images"
+                <div
+                  className="group relative flex h-full flex-col rounded-3xl bg-zinc-900/60 border border-zinc-800 overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/10"
                 >
-                  {isMounted ? (
-                    <Swiper
-                      modules={[Autoplay, Pagination, EffectFade]}
-                      effect={"fade"}
-                      autoplay={{
-                        delay: 10000,
-                        disableOnInteraction: false,
-                      }}
-                      pagination={{
-                        clickable: true,
-                      }}
-                      className="h-full w-full project-swiper"
-                    >
-                      {project.images.map((img, imgIndex) => (
-                        <SwiperSlide key={imgIndex} className="relative h-full w-full">
-                          <Image
-                            src={img}
-                            alt={`${project.title} - aperçu ${imgIndex + 1}`}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, 33vw"
-                          />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  ) : (
-                    <div className="relative h-full w-full">
-                      <Image
-                        src={project.images[0]}
-                        alt={project.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    </div>
-                  )}
-
-                  {/* Badge Catégorie flottant */}
-                  <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-950/80 backdrop-blur-md border border-zinc-800 text-xs font-medium text-indigo-400 pointer-events-none">
-                    <IconComponent className="h-3.5 w-3.5" />
-                    {project.category}
-                  </div>
-
-                  {/* Overlay indicatif au survol */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20 pointer-events-none">
-                    <span className="px-3 py-1.5 rounded-xl bg-zinc-900/90 text-white text-xs font-medium border border-zinc-700 shadow-lg">
-                       Agrandir les images
-                    </span>
-                  </div>
-                </div>
-
-                {/* Contenu de la carte */}
-                <div className="flex flex-1 flex-col justify-between p-6">
-                  <div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="mt-3 text-sm text-zinc-400 leading-relaxed">
-                      {project.description}
-                    </p>
-
-                    {/* Tags technologiques */}
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      {project.tags.map((tag, tagIndex) => (
-                        <span
-                          key={tagIndex}
-                          className="px-2.5 py-1 text-xs font-mono rounded-lg bg-zinc-800/80 text-zinc-300 border border-zinc-700/50"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Liens d'action en bas de carte */}
-                  <div className="mt-8 pt-4 border-t border-zinc-800/80 flex items-center justify-between">
-                    <Link
-                      href={project.github}
-                      className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-white transition-colors"
-                    >
-                      <FaGithub className="h-4 w-4" /> Code source
-                    </Link>
-
-                    {project.showPreviewButton && (
-                      <Link
-                        href={project.link}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-md shadow-indigo-600/20"
+                  {/* Conteneur Image avec Swiper cliquable pour ouvrir la modale */}
+                  <div
+                    className="relative h-56 w-full overflow-hidden bg-zinc-950 cursor-pointer"
+                    onClick={() => openImageModal(project.images, project.title)}
+                    title="Cliquez pour agrandir les images"
+                  >
+                    {isMounted ? (
+                      <Swiper
+                        modules={[Autoplay, Pagination, EffectFade]}
+                        effect={"fade"}
+                        autoplay={{
+                          delay: 10000,
+                          disableOnInteraction: false,
+                        }}
+                        pagination={{
+                          clickable: true,
+                        }}
+                        className="h-full w-full project-swiper"
                       >
-                        <span>Voir le projet</span>
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </Link>
+                        {project.images.map((img, imgIndex) => (
+                          <SwiperSlide key={imgIndex} className="relative h-full w-full">
+                            <Image
+                              src={img}
+                              alt={`${project.title} - aperçu ${imgIndex + 1}`}
+                              fill
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                              sizes="(max-width: 768px) 100vw, 33vw"
+                            />
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                    ) : (
+                      <div className="relative h-full w-full">
+                        <Image
+                          src={project.images[0]}
+                          alt={project.title}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                        />
+                      </div>
                     )}
+
+                    {/* Badge Catégorie flottant */}
+                    <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-950/80 backdrop-blur-md border border-zinc-800 text-xs font-medium text-indigo-400 pointer-events-none">
+                      <IconComponent className="h-3.5 w-3.5" />
+                      {project.category}
+                    </div>
+
+                    {/* Overlay indicatif au survol */}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20 pointer-events-none">
+                      <span className="px-3 py-1.5 rounded-xl bg-zinc-900/90 text-white text-xs font-medium border border-zinc-700 shadow-lg">
+                         Agrandir les images
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Contenu de la carte */}
+                  <div className="flex flex-1 flex-col justify-between p-6">
+                    <div>
+                      <h3 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">
+                        {project.title}
+                      </h3>
+                      <p className="mt-3 text-sm text-zinc-400 leading-relaxed">
+                        {project.description}
+                      </p>
+
+                      {/* Tags technologiques */}
+                      <div className="mt-6 flex flex-wrap gap-2">
+                        {project.tags.map((tag, tagIndex) => (
+                          <span
+                            key={tagIndex}
+                            className="px-2.5 py-1 text-xs font-mono rounded-lg bg-zinc-800/80 text-zinc-300 border border-zinc-700/50"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Liens d'action en bas de carte */}
+                    <div className="mt-8 pt-4 border-t border-zinc-800/80 flex items-center justify-between">
+                      <Link
+                        href={project.github}
+                        className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+                      >
+                        <FaGithub className="h-4 w-4" /> Code source
+                      </Link>
+
+                      {project.showPreviewButton && (
+                        <Link
+                          href={project.link}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-md shadow-indigo-600/20"
+                        >
+                          <span>Voir le projet</span>
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -215,7 +251,7 @@ export default function FeaturedProjects() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-200">
           <div className="relative w-full max-w-4xl bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
-            
+
             {/* Header de la modale */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-950/50">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
